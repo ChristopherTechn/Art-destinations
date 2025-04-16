@@ -1,0 +1,452 @@
+:root {
+  --primary-blue: #1e3a8a;
+  --secondary-blue: #3b82f6;
+  --warm-orange: #f97316;
+  --soft-purple: #7c3aed;
+  --light-bg: #f1f5f9;
+  --dark-bg: #0f172a;
+  --text-dark: #1e293b;
+  --text-light: #f8fafc;
+  --shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+body.dark-mode {
+  background-color: var(--dark-bg);
+  color: var(--text-light);
+}
+
+/* Page Container */
+.destinations-page {
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+  background-color: var(--light-bg);
+  transition: background-color 0.3s ease;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
+
+.destinations-page.dark {
+  background-color: var(--dark-bg);
+}
+
+/* Header */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex-shrink: 0;
+  transition: background 0.3s ease;
+}
+
+.kenyan-title {
+  color: var(--text-light);
+  font-size: 2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.header-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.header-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--warm-orange);
+  color: var(--text-light);
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.header-buttons button:hover {
+  background-color: var(--soft-purple);
+  transform: scale(1.05);
+}
+
+/* Content Container */
+.content-container {
+  flex: 1;
+  padding: 40px;
+}
+
+/* Hero Section */
+.hero-section {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.hero-section img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+.hero-section h1 {
+  font-size: 2.5rem;
+  color: var(--primary-blue);
+  margin: 20px 0;
+}
+
+.trip-details {
+  font-size: 1.1rem;
+  color: var(--text-dark);
+}
+
+.destinations-page.dark .trip-details {
+  color: var(--text-light);
+}
+
+.trip-details a {
+  color: var(--secondary-blue);
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+.trip-details a:hover {
+  text-decoration: underline;
+}
+
+/* Main Content */
+.main-content {
+  display: flex;
+  gap: 30px;
+}
+
+/* Filter Sidebar */
+.filter-sidebar {
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+.destinations-page.dark .filter-sidebar {
+  background-color: #1e293b;
+}
+
+.filter-sidebar h3 {
+  font-size: 1.5rem;
+  color: var(--primary-blue);
+  margin-bottom: 15px;
+}
+
+.filter-group {
+  margin-bottom: 20px;
+}
+
+.filter-group label {
+  font-size: 1.1rem;
+  color: var(--text-dark);
+  margin-bottom: 5px;
+  display: block;
+}
+
+.destinations-page.dark .filter-group label {
+  color: var(--text-light);
+}
+
+.filter-group input,
+.filter-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.destinations-page.dark .filter-group input,
+.destinations-page.dark .filter-group select {
+  background-color: #334155;
+  color: var(--text-light);
+  border-color: #475569;
+}
+
+/* Destinations List */
+.destinations-list {
+  flex: 3;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.destination-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.destinations-page.dark .destination-card {
+  background-color: #1e293b;
+}
+
+.destination-card:hover {
+  transform: translateY(-10px);
+}
+
+.image-container img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: 15px;
+}
+
+.card-content h2 {
+  font-size: 1.5rem;
+  color: var(--primary-blue);
+  margin-bottom: 10px;
+}
+
+.description {
+  font-size: 1rem;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+}
+
+.destinations-page.dark .description {
+  color: var(--text-light);
+}
+
+.details,
+.activities,
+.status {
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  margin-bottom: 5px;
+}
+
+.destinations-page.dark .details,
+.destinations-page.dark .activities,
+.destinations-page.dark .status {
+  color: var(--text-light);
+}
+
+.status .available {
+  color: var(--secondary-blue);
+}
+
+.status .booked {
+  color: var(--warm-orange);
+}
+
+/* Booking Summary */
+.booking-summary {
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+.destinations-page.dark .booking-summary {
+  background-color: #1e293b;
+}
+
+.booking-summary h3 {
+  font-size: 1.5rem;
+  color: var(--primary-blue);
+  margin-bottom: 15px;
+}
+
+.booking-summary p {
+  font-size: 1rem;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+}
+
+.destinations-page.dark .booking-summary p {
+  color: var(--text-light);
+}
+
+.booking-summary button {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--secondary-blue);
+  color: var(--text-light);
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.booking-summary button:hover {
+  background-color: var(--primary-blue);
+  transform: translateY(-2px);
+}
+
+/* Testimonials */
+.testimonials {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.testimonials h2 {
+  font-size: 1.8rem;
+  color: var(--primary-blue);
+  margin-bottom: 20px;
+}
+
+.testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.testimonial-item {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.destinations-page.dark .testimonial-item {
+  background-color: #1e293b;
+}
+
+.testimonial-item p {
+  font-size: 1rem;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+}
+
+.destinations-page.dark .testimonial-item p {
+  color: var(--text-light);
+}
+
+.testimonial-item span {
+  font-size: 0.9rem;
+  color: var(--secondary-blue);
+}
+
+/* Footer */
+.footer {
+  padding: 20px 40px;
+  background-color: var(--primary-blue);
+  color: var(--text-light);
+  text-align: center;
+  flex-shrink: 0;
+  border-top: 1px solid var(--secondary-blue);
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-text {
+  font-size: 0.9rem;
+}
+
+.social-icons {
+  display: flex;
+  gap: 15px;
+}
+
+.social-icons a {
+  color: var(--warm-orange);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: var(--text-light);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .header-buttons {
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 15px;
+  }
+
+  .content-container {
+    padding: 20px;
+  }
+
+  .main-content {
+    flex-direction: column;
+  }
+
+  .destinations-list {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-content {
+    flex-direction: column;
+  }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--light-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--secondary-blue);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--soft-purple);
+}
+
+.destinations-page.dark ::-webkit-scrollbar-track {
+  background: var(--dark-bg);
+}
+
+.destinations-page.dark ::-webkit-scrollbar-thumb {
+  background: var(--warm-orange);
+}
+
+/* Loading and Error */
+.loading,
+.error {
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--text-dark);
+  padding: 40px;
+}
+
+.destinations-page.dark .loading,
+.destinations-page.dark .error {
+  color: var(--text-light);
+}

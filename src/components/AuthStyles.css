@@ -1,0 +1,235 @@
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+body {
+  background: #f5f5f5;
+  color: #333;
+  line-height: 1.6;
+  /* Removed overflow-y: hidden from body */
+}
+
+/* Auth Wrapper (Common for Login and Register) */
+.auth-wrapper, .auth-wrapper-register {
+  display: flex;
+  height: 100vh; /* Full viewport height, no scroll */
+  background: linear-gradient(135deg, #f5e8d9 0%, #e8f0e8 100%);
+  overflow-y: hidden; /* Moved here to restrict scrolling only for auth pages */
+  padding: 20px;
+  gap: 20px;
+  padding-left: 20%;
+}
+
+/* Auth Image Section */
+.auth-image {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #2e7d32;
+  height: 80%;
+  max-width: 40%;
+  align-self: center;
+  border-radius: 10px;
+}
+
+.auth-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+  transition: transform 0.5s ease;
+}
+
+.auth-image:hover img {
+  transform: scale(1.05);
+}
+
+/* Auth Container */
+.auth-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  max-width: 500px;
+  height: 80%;
+  align-self: center;
+}
+
+/* Header with Logo */
+.auth-header {
+  margin-bottom: 20px;
+}
+
+.auth-header img {
+  width: 50px;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.auth-header img:hover {
+  transform: rotate(5deg);
+}
+
+/* Headings */
+h2 {
+  font-size: 1.8rem;
+  color: #2e7d32;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Form Styles */
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus {
+  border-color: #2e7d32;
+  box-shadow: 0 0 5px rgba(46, 125, 50, 0.3);
+  outline: none;
+}
+
+/* Password Container with Eye Icon */
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-container input {
+  padding-right: 40px;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.eye-icon:hover {
+  color: #2e7d32;
+}
+
+/* Button Styles */
+button {
+  padding: 12px;
+  background: #2e7d32;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background: #1b5e20;
+  transform: translateY(-2px);
+}
+
+button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Error Message */
+.error {
+  color: #d32f2f;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Auth Links */
+.auth-links {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.auth-links a {
+  color: #2e7d32;
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin: 0 10px;
+  transition: color 0.3s ease;
+}
+
+.auth-links a:hover {
+  color: #1b5e20;
+  text-decoration: underline;
+}
+
+/* Error List and Success */
+.error-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.error-list li {
+  color: #d32f2f;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+.success {
+  color: #2e7d32;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .auth-wrapper, .auth-wrapper-register {
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .auth-image {
+    height: 30%;
+    max-width: 100%;
+  }
+
+  .auth-container {
+    height: 65%;
+    max-width: 100%;
+    padding: 20px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  input, button {
+    font-size: 0.95rem;
+  }
+}
