@@ -1,52 +1,83 @@
 const bcrypt = require('bcrypt');
-const crypto = require('crypto'); // Import crypto for generating random codes
+const crypto = require('crypto');
 const emailService = require('../services/emailService');
 const userModel = require('../Models/userModel');
-const { UserSchema } = require('../Middleware/validation'); // Use UserSchema for validation
+const { UserSchema } = require('../Middleware/validation');
 
 exports.registerUser = async (req, res) => {
   try {
-    // Validate the request body using the Joi schema
-    const { error } = UserSchema.validate(req.body); // Validate using the correct schema
-    if (error) return res.status(400).send(error.details[0].message);
+    // Validate request body with Joi schema
+    const { error } = UserSchema.validate(req.body, { abortEarly: false });
+    if (error) {
+      const errorMessages = error.details.map(detail => detail.message);
+      return res.status(400).json({ errors: errorMessages });
+    }
+
+    const { username, email, password } = req.body;
+
+    // Check for existing username or email
+    const existingUser = await userModel.findByUsernameOrEmail(username, email);
+    if (existingUser) {
+      if (existingUser.username === username) {
+        return res.status(409).json({ message: 'Username already exists' });
+      }
+      if (existingUser.email === email) {
+        return res.status(409).json({ message: 'Email already registered' });
+      }
+    }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Generate a random confirmation code
-    const confirmationCode = crypto.randomBytes(3).toString('hex'); // Generate a random 6-character hex code
+    const confirmationCode = crypto.randomBytes(3).toString('hex');
 
-    // Create user with pending status and confirmation code in the database
-    await userModel.createPendingUser({
-      username: req.body.username,
-      email: req.body.email,
+    // Create pending user
+    const pendingUser = await userModel.createPendingUser({
+      username: username.trim(),
+      email: email.trim().toLowerCase(),
       password: hashedPassword,
-      confirmationCode, // Save the confirmation code
+      confirmationCode,
     });
 
-    // Send confirmation email with the code
-    await emailService.sendConfirmationEmail(req.body.email, confirmationCode);
+    // Send confirmation email
+    try {
+      await emailService.sendConfirmationEmail(email, confirmationCode);
+    } catch (emailError) {
+      console.error('Email sending failed:', emailError);
+      return res.status(502).json({ message: 'Failed to send confirmation email. Please try again.' });
+    }
 
-    res.status(201).send('User registered! Please check your email for the confirmation code.');
+    res.status(201).json({
+      message: 'User registered! Please check your email for the confirmation code.',
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Internal server error');
+    console.error('Registration error:', err.message || err);
+    res.status(500).json({ message: 'Internal server error', error: err.message });
   }
 };
 
 exports.confirmUser = async (req, res) => {
-  const { email, code } = req.body; // Retrieve email and code from the request body
+  const { email, code } = req.body;
+
+  if (!email || !code) {
+    return res.status(400).json({ message: 'Email and confirmation code are required' });
+  }
 
   try {
-    // Check if the email and code match a pending user
-    const confirmed = await userModel.confirmUser(email, code);
-    if (confirmed) {
-      res.send('Email confirmed! You can now log in.');
-    } else {
-      res.status(400).send('Error confirming email or invalid/expired code.');
+    const user = await userModel.findPendingUser(email.trim().toLowerCase(), code);
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired confirmation code' });
     }
+
+    const updated = await userModel.confirmUser(email, code);
+    if (!updated) {
+      return res.status(400).json({ message: 'Failed to confirm email' });
+    }
+
+    res.status(200).json({ message: 'Email confirmed! You can now log in.' });
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Internal server error');
+    console.error('Confirmation error:', err.message || err);
+    res.status(500).json({ message: 'Internal server error', error: err.message });
   }
 };

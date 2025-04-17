@@ -1,10 +1,11 @@
-// src/Models/userModel.js
-const db = require('../Config/dbconfig'); // Assuming you have a db connection
-const bcrypt = require('bcrypt'); // Import bcrypt for password hashing
+const db = require('../Config/dbconfig'); // Ensure correct DB config import
+const bcrypt = require('bcrypt');
 
-// Function to register a user with pending status and confirmation code
+// Register a user with pending status and confirmation code
 const createPendingUser = async (userData) => {
-  const query = `INSERT INTO Users (username, email, password, confirmation_code, code_expires, status) VALUES (?, ?, ?, ?, ?, ?)`;
+  const checkQuery = `SELECT user_id FROM Users WHERE email = ?`;
+  const insertQuery = `INSERT INTO Users (username, email, password, confirmation_code, code_expires, status) VALUES (?, ?, ?, ?, ?, ?)`;
+  
   const values = [
     userData.username,
     userData.email,
@@ -15,46 +16,80 @@ const createPendingUser = async (userData) => {
   ];
 
   try {
-    const [result] = await db.execute(query, values);
-    return { id: result.insertId, email: userData.email };
+    const [existingUser] = await db.query(checkQuery, [userData.email]);
+    if (existingUser.length > 0) {
+      throw new Error('Email already registered. Please login or reset password.');
+    }
+
+    const [result] = await db.query(insertQuery, values);
+    return { user_id: result.insertId, email: userData.email };
   } catch (error) {
     throw new Error('Error registering user: ' + error.message);
   }
 };
 
-// Function to confirm the user with the code
+// Confirm the user with the code and activate the account
 const confirmUser = async (email, code) => {
-  const query = `UPDATE Users SET status = 'active' WHERE email = ? AND confirmation_code = ? AND code_expires > NOW()`;
-  const values = [email, code];
-
+  const updateQuery = `
+    UPDATE Users 
+    SET status = 'active', confirmation_code = NULL 
+    WHERE email = ? AND confirmation_code = ? AND code_expires > NOW()
+  `;
+  
   try {
-    const [result] = await db.execute(query, values);
-    return result.affectedRows > 0; // Return true if user was confirmed
+    const [result] = await db.query(updateQuery, [email, code]);
+    if (result.affectedRows === 0) {
+      throw new Error('Invalid or expired confirmation code.');
+    }
+    return true;
   } catch (error) {
     throw new Error('Error confirming user: ' + error.message);
   }
 };
 
-// Function to find user by username
+// Find user by username
 const findUserByUsername = async (username) => {
   const query = `SELECT * FROM Users WHERE username = ?`;
-  const values = [username];
-
+  
   try {
-    const [rows] = await db.execute(query, values);
-    return rows[0]; // Return the user object if found
+    const [rows] = await db.query(query, [username]);
+    return rows.length > 0 ? rows[0] : null;
   } catch (error) {
     throw new Error('Error fetching user: ' + error.message);
   }
 };
 
-// Function to validate user credentials
+// Validate user credentials (Login)
 const validateUser = async (username, password) => {
   const user = await findUserByUsername(username);
-  if (!user) return false; // If no user found, return false
+  if (!user) return false;
 
   const isValidPassword = await bcrypt.compare(password, user.password);
-  return isValidPassword ? user : false; // Return user if password is valid, else return false
+  return isValidPassword ? user : false;
+};
+
+// Find pending user by email and confirmation code
+const findPendingUser = async (email, code) => {
+  const query = `SELECT * FROM Users WHERE email = ? AND confirmation_code = ? AND status = 'pending' AND code_expires > NOW()`;
+  
+  try {
+    const [rows] = await db.query(query, [email, code]);
+    return rows.length > 0 ? rows[0] : null;
+  } catch (error) {
+    throw new Error('Error finding pending user: ' + error.message);
+  }
+};
+
+// NEW: Find user by username or email to check duplicates
+const findByUsernameOrEmail = async (username, email) => {
+  const query = `SELECT * FROM Users WHERE username = ? OR email = ?`;
+  
+  try {
+    const [rows] = await db.query(query, [username, email]);
+    return rows.length > 0 ? rows[0] : null;
+  } catch (error) {
+    throw new Error('Error checking for existing user: ' + error.message);
+  }
 };
 
 // Export functions
@@ -63,4 +98,6 @@ module.exports = {
   confirmUser,
   findUserByUsername,
   validateUser,
+  findPendingUser,
+  findByUsernameOrEmail, // Added this
 };
